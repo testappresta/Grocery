@@ -23,6 +23,8 @@ import storeRoutes from './routes/store';
 import driverRoutes from './routes/driver';
 import paymentRoutes from './routes/payment';
 import notificationRoutes from './routes/notification';
+import reviewRoutes from './routes/review';
+import couponRoutes from './routes/coupon';
 
 dotenv.config();
 
@@ -89,6 +91,8 @@ app.use('/api/v1/stores', storeRoutes);
 app.use('/api/v1/drivers', driverRoutes);
 app.use('/api/v1/payments', paymentRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
+app.use('/api/v1/reviews', reviewRoutes);
+app.use('/api/v1/coupons', couponRoutes);
 
 // 错误处理
 app.use(errorHandler);
