@@ -99,3 +99,11 @@ export const orderAPI = {
   createOrder: (data: any) => api.post('/orders', data),
   cancelOrder: (id: string) => api.put(`/orders/${id}/cancel`),
 };
+
+export const userAPI = {
+  getAddresses: () => api.get('/addresses'),
+  addAddress: (data: any) => api.post('/addresses', data),
+  updateAddress: (id: string, data: any) => api.put(`/addresses/${id}`, data),
+  deleteAddress: (id: string) => api.delete(`/addresses/${id}`),
+  setDefaultAddress: (id: string) => api.put(`/addresses/${id}/default`),
+};
