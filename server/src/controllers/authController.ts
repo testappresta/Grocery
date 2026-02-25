@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User';
 import { asyncHandler } from '../middleware/errorHandler';
 import { logger } from '../utils/logger';
+import { sendVerificationCode, verifyCode } from '../services/smsService';
 
 // 生成 Token
 const generateTokens = (userId: string) => {
@@ -31,18 +32,19 @@ export const sendVerificationCode = asyncHandler(async (req: Request, res: Respo
   
   const { phone } = req.body;
   
-  // TODO: 集成短信服务（如 Twilio、阿里云短信等）
-  // 这里模拟发送验证码
-  const code = Math.floor(1000 + Math.random() * 9000).toString();
+  const code = await sendVerificationCode(phone);
   
-  logger.info(`Verification code for ${phone}: ${code}`);
-  
-  // 实际项目中，将验证码存入 Redis，设置 5 分钟过期
+  if (!code) {
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to send verification code'
+    });
+  }
   
   res.json({
     success: true,
     message: 'Verification code sent',
-    // 开发环境返回验证码，生产环境不要返回
+    // 开发环境返回验证码
     ...(process.env.NODE_ENV === 'development' && { code })
   });
 });
@@ -56,8 +58,15 @@ export const loginWithPhone = asyncHandler(async (req: Request, res: Response) =
   
   const { phone, code } = req.body;
   
-  // TODO: 验证验证码
-  // 实际项目中，从 Redis 获取验证码并验证
+  // 验证验证码
+  const isValid = verifyCode(phone, code);
+  
+  if (!isValid) {
+    return res.status(401).json({
+      success: false,
+      message: 'Invalid or expired verification code'
+    });
+  }
   
   let user = await User.findOne({ phone });
   

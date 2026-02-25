@@ -98,6 +98,8 @@ app.use((req, res) => {
   res.status(404).json({ message: 'API endpoint not found' });
 });
 
+import './jobs/orderJobs';
+
 httpServer.listen(PORT, () => {
   logger.info(`🚀 Server running on port ${PORT}`);
   logger.info(`📱 Environment: ${process.env.NODE_ENV || 'development'}`);
