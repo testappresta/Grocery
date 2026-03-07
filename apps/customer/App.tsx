@@ -16,6 +16,8 @@ import StoreDetailScreen from './screens/StoreDetailScreen';
 import CheckoutScreen from './screens/CheckoutScreen';
 import LoginScreen from './screens/LoginScreen';
 import AddressesScreen from './screens/AddressesScreen';
+import FarmScreen from './screens/FarmScreen';
+import RewardsScreen from './screens/RewardsScreen';
 
 // 导航器
 const Tab = createBottomTabNavigator();
@@ -113,7 +115,31 @@ function MainTabs() {
 // 主应用
 export default function App() {
   return (
-    <NavigationContainer>
+    <NavigationContainer
+        linking={{
+          prefixes: ['http://localhost:19006'],
+          config: {
+            screens: {
+              Main: {
+                screens: {
+                  Home: 'home',
+                  Stores: 'stores',
+                  Cart: 'cart',
+                  Orders: 'orders',
+                  Profile: 'profile',
+                },
+              },
+              ProductDetail: 'product/:productId',
+              StoreDetail: 'store/:storeId',
+              Checkout: 'checkout',
+              Login: 'login',
+              Addresses: 'addresses',
+              Farm: 'farm',
+              Rewards: 'rewards',
+            },
+          },
+        }}
+      >
       <StatusBar style="auto" />
       <Stack.Navigator
         screenOptions={{
@@ -164,6 +190,16 @@ export default function App() {
           name="Addresses"
           component={AddressesScreen}
           options={{ title: '我的地址' }}
+        />
+        <Stack.Screen
+          name="Farm"
+          component={FarmScreen}
+          options={{ title: '我的农场', headerShown: false }}
+        />
+        <Stack.Screen
+          name="Rewards"
+          component={RewardsScreen}
+          options={{ title: '积分商城' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

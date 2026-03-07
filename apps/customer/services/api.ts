@@ -107,3 +107,14 @@ export const userAPI = {
   deleteAddress: (id: string) => api.delete(`/addresses/${id}`),
   setDefaultAddress: (id: string) => api.put(`/addresses/${id}/default`),
 };
+
+export const farmAPI = {
+  getFarm: () => api.get('/farm'),
+  plant: (plotIndex: number, cropType: string) => api.post('/farm/plant', { plotIndex, cropType }),
+  harvest: (plotIndex: number) => api.post('/farm/harvest', { plotIndex }),
+  harvestAll: () => api.post('/farm/harvest-all'),
+  checkIn: () => api.post('/farm/check-in'),
+  getRewards: () => api.get('/farm/rewards'),
+  redeemReward: (rewardId: string) => api.post('/farm/rewards/redeem', { rewardId }),
+  getHistory: () => api.get('/farm/rewards/history'),
+};
