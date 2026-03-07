@@ -44,78 +44,115 @@ export default function AddressesScreen() {
     }
   };
 
-  const renderAddressForm = () => (
-    <View style={styles.formContainer}>
-      <Text style={styles.formTitle}>添加新地址</Text>
-      
-      <TextInput
-        style={styles.input}
-        placeholder="收货人姓名"
-        value={formData.name}
-        onChangeText={(text) => setFormData({ ...formData, name: text })}
-      />
-      
-      <TextInput
-        style={styles.input}
-        placeholder="手机号"
-        keyboardType="phone-pad"
-        value={formData.phone}
-        onChangeText={(text) => setFormData({ ...formData, phone: text })}
-      />
-      
-      <TextInput
-        style={styles.input}
-        placeholder="详细地址"
-        value={formData.address}
-        onChangeText={(text) => setFormData({ ...formData, address: text })}
-      />
-      
-      <TextInput
-        style={styles.input}
-        placeholder="门牌号/楼层（选填）"
-        value={formData.detail}
-        onChangeText={(text) => setFormData({ ...formData, detail: text })}
-      />
+  const tagOptions = [
+    { key: 'home', label: '🏠 家', color: '#3B82F6' },
+    { key: 'work', label: '🏢 公司', color: '#8B5CF6' },
+    { key: 'other', label: '📍 其他', color: '#F59E0B' },
+  ];
 
-      <View style={styles.tagContainer}>
-        {['home', 'work', 'other'].map((tag) => (
-          <TouchableOpacity
-            key={tag}
-            style={[
-              styles.tagButton,
-              formData.tag === tag && styles.tagButtonActive,
-            ]}
-            onPress={() => setFormData({ ...formData, tag })}
-          >
-            <Text
+  const renderAddressForm = () => (
+    <View style={styles.formCard}>
+      <Text style={styles.formTitle}>添加新地址</Text>
+
+      <View style={styles.inputGroup}>
+        <Text style={styles.inputLabel}>收货人姓名</Text>
+        <View style={styles.inputRow}>
+          <Text style={styles.inputIcon}>👤</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="请输入收货人姓名"
+            placeholderTextColor="#CCCCCC"
+            value={formData.name}
+            onChangeText={(text) => setFormData({ ...formData, name: text })}
+          />
+        </View>
+      </View>
+
+      <View style={styles.inputGroup}>
+        <Text style={styles.inputLabel}>手机号</Text>
+        <View style={styles.inputRow}>
+          <Text style={styles.inputIcon}>📱</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="请输入手机号"
+            placeholderTextColor="#CCCCCC"
+            keyboardType="phone-pad"
+            value={formData.phone}
+            onChangeText={(text) => setFormData({ ...formData, phone: text })}
+          />
+        </View>
+      </View>
+
+      <View style={styles.inputGroup}>
+        <Text style={styles.inputLabel}>详细地址</Text>
+        <View style={styles.inputRow}>
+          <Text style={styles.inputIcon}>📍</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="请输入详细地址"
+            placeholderTextColor="#CCCCCC"
+            value={formData.address}
+            onChangeText={(text) => setFormData({ ...formData, address: text })}
+          />
+        </View>
+      </View>
+
+      <View style={styles.inputGroup}>
+        <Text style={styles.inputLabel}>门牌号/楼层（选填）</Text>
+        <View style={styles.inputRow}>
+          <Text style={styles.inputIcon}>🏠</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="如：3楼301室"
+            placeholderTextColor="#CCCCCC"
+            value={formData.detail}
+            onChangeText={(text) => setFormData({ ...formData, detail: text })}
+          />
+        </View>
+      </View>
+
+      <View style={styles.inputGroup}>
+        <Text style={styles.inputLabel}>标签</Text>
+        <View style={styles.tagContainer}>
+          {tagOptions.map((option) => (
+            <TouchableOpacity
+              key={option.key}
               style={[
-                styles.tagText,
-                formData.tag === tag && styles.tagTextActive,
+                styles.tagButton,
+                formData.tag === option.key && { backgroundColor: option.color, borderColor: option.color },
               ]}
+              onPress={() => setFormData({ ...formData, tag: option.key })}
             >
-              {tag === 'home' ? '家' : tag === 'work' ? '公司' : '其他'}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Text
+                style={[
+                  styles.tagText,
+                  formData.tag === option.key && styles.tagTextActive,
+                ]}
+              >
+                {option.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
 
       <View style={styles.formButtons}>
         <TouchableOpacity
-          style={[styles.button, styles.cancelButton]}
+          style={styles.cancelBtn}
           onPress={() => setShowForm(false)}
         >
-          <Text style={styles.cancelButtonText}>取消</Text>
+          <Text style={styles.cancelBtnText}>取消</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
-          style={[styles.button, styles.saveButton]}
+          style={styles.saveBtn}
           onPress={handleSave}
           disabled={loading}
         >
           {loading ? (
-            <ActivityIndicator color="white" />
+            <ActivityIndicator color="#FFFFFF" />
           ) : (
-            <Text style={styles.saveButtonText}>保存</Text>
+            <Text style={styles.saveBtnText}>保存地址</Text>
           )}
         </TouchableOpacity>
       </View>
@@ -123,172 +160,291 @@ export default function AddressesScreen() {
   );
 
   return (
-    <ScrollView style={styles.container}>
-      {addresses.length === 0 && !showForm ? (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>暂无地址</Text>
-        </View>
-      ) : (
-        addresses.map((addr, index) => (
-          <View key={index} style={styles.addressCard}>
-            <View style={styles.addressHeader}>
-              <Text style={styles.addressName}>{addr.name}</Text>
-              <Text style={styles.addressPhone}>{addr.phone}</Text>
-              {addr.isDefault && (
-                <View style={styles.defaultBadge}>
-                  <Text style={styles.defaultText}>默认</Text>
-                </View>
-              )}
-            </View>
-            <Text style={styles.addressText}>{addr.address}</Text>
-            {addr.detail && <Text style={styles.detailText}>{addr.detail}</Text>}
-          </View>
-        ))
-      )}
-
-      {showForm && renderAddressForm()}
-
-      {!showForm && (
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => setShowForm(true)}
+    <View style={styles.outerContainer}>
+      <View style={styles.container}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
         >
-          <Text style={styles.addButtonText}>+ 添加新地址</Text>
-        </TouchableOpacity>
-      )}
-    </ScrollView>
+          {addresses.length === 0 && !showForm ? (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyIcon}>📍</Text>
+              <Text style={styles.emptyTitle}>暂无地址</Text>
+              <Text style={styles.emptySubtitle}>添加一个配送地址吧</Text>
+            </View>
+          ) : (
+            addresses.map((addr, index) => (
+              <View key={index} style={styles.addressCard}>
+                <View style={styles.addressTop}>
+                  <View style={styles.addressTagWrap}>
+                    <Text style={styles.addressTagText}>
+                      {addr.tag === 'home' ? '🏠 家' : addr.tag === 'work' ? '🏢 公司' : '📍 其他'}
+                    </Text>
+                  </View>
+                  {addr.isDefault && (
+                    <View style={styles.defaultBadge}>
+                      <Text style={styles.defaultText}>默认</Text>
+                    </View>
+                  )}
+                </View>
+                <View style={styles.addressInfo}>
+                  <View style={styles.addressNameRow}>
+                    <Text style={styles.addressName}>{addr.name}</Text>
+                    <Text style={styles.addressPhone}>{addr.phone}</Text>
+                  </View>
+                  <Text style={styles.addressText}>{addr.address}</Text>
+                  {addr.detail && <Text style={styles.detailText}>{addr.detail}</Text>}
+                </View>
+              </View>
+            ))
+          )}
+
+          {showForm && renderAddressForm()}
+
+          {!showForm && (
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() => setShowForm(true)}
+            >
+              <View style={styles.addIconCircle}>
+                <Text style={styles.addIcon}>+</Text>
+              </View>
+              <Text style={styles.addButtonText}>添加新地址</Text>
+            </TouchableOpacity>
+          )}
+        </ScrollView>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  outerContainer: {
+    flex: 1,
+    backgroundColor: '#F5F6FA',
+    alignItems: 'center',
+  },
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    padding: 15,
+    width: '100%',
+    maxWidth: 480,
+  },
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 32,
   },
   emptyContainer: {
     alignItems: 'center',
-    marginTop: 50,
+    marginTop: 80,
   },
-  emptyText: {
-    fontSize: 16,
+  emptyIcon: {
+    fontSize: 56,
+    marginBottom: 16,
+  },
+  emptyTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: '#1A1A1A',
+    marginBottom: 6,
+  },
+  emptySubtitle: {
+    fontSize: 14,
     color: '#999',
   },
   addressCard: {
-    backgroundColor: 'white',
-    padding: 15,
-    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    padding: 16,
     marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 1,
   },
-  addressHeader: {
+  addressTop: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 10,
+  },
+  addressTagWrap: {
+    backgroundColor: '#F5F6FA',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    marginRight: 8,
+  },
+  addressTagText: {
+    fontSize: 12,
+    color: '#666',
+    fontWeight: '500',
+  },
+  defaultBadge: {
+    backgroundColor: '#00B57815',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  defaultText: {
+    color: '#00B578',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  addressInfo: {},
+  addressNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
   },
   addressName: {
     fontSize: 16,
-    fontWeight: 'bold',
-    marginRight: 10,
+    fontWeight: '600',
+    color: '#1A1A1A',
+    marginRight: 12,
   },
   addressPhone: {
     fontSize: 14,
     color: '#666',
-    flex: 1,
-  },
-  defaultBadge: {
-    backgroundColor: '#4CAF5020',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  defaultText: {
-    color: '#4CAF50',
-    fontSize: 12,
   },
   addressText: {
     fontSize: 14,
     color: '#333',
+    lineHeight: 20,
   },
   detailText: {
     fontSize: 12,
     color: '#999',
     marginTop: 4,
   },
-  formContainer: {
-    backgroundColor: 'white',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 15,
+  formCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    padding: 20,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
   },
   formTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 15,
+    fontWeight: '700',
+    color: '#1A1A1A',
+    marginBottom: 20,
+  },
+  inputGroup: {
+    marginBottom: 16,
+  },
+  inputLabel: {
+    fontSize: 13,
+    color: '#666',
+    marginBottom: 8,
+    fontWeight: '500',
+  },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F6FA',
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    height: 48,
+  },
+  inputIcon: {
+    fontSize: 16,
+    marginRight: 10,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 12,
+    flex: 1,
     fontSize: 14,
+    color: '#1A1A1A',
+    height: 48,
   },
   tagContainer: {
     flexDirection: 'row',
-    marginBottom: 15,
   },
   tagButton: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 18,
     paddingVertical: 8,
     borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderWidth: 1.5,
+    borderColor: '#E0E0E0',
     marginRight: 10,
-  },
-  tagButtonActive: {
-    backgroundColor: '#4CAF50',
-    borderColor: '#4CAF50',
+    backgroundColor: '#FFFFFF',
   },
   tagText: {
+    fontSize: 13,
     color: '#666',
+    fontWeight: '500',
   },
   tagTextActive: {
-    color: 'white',
+    color: '#FFFFFF',
   },
   formButtons: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    marginTop: 8,
   },
-  button: {
+  cancelBtn: {
     flex: 1,
-    padding: 12,
-    borderRadius: 8,
+    paddingVertical: 13,
+    borderRadius: 12,
+    backgroundColor: '#F5F6FA',
     alignItems: 'center',
-    marginHorizontal: 5,
+    marginRight: 10,
   },
-  cancelButton: {
-    backgroundColor: '#f0f0f0',
-  },
-  cancelButtonText: {
+  cancelBtnText: {
     color: '#666',
+    fontSize: 15,
+    fontWeight: '500',
   },
-  saveButton: {
-    backgroundColor: '#4CAF50',
+  saveBtn: {
+    flex: 2,
+    paddingVertical: 13,
+    borderRadius: 12,
+    backgroundColor: '#00B578',
+    alignItems: 'center',
+    shadowColor: '#00B578',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  saveButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+  saveBtnText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '700',
   },
   addButton: {
-    backgroundColor: 'white',
-    padding: 15,
-    borderRadius: 10,
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    padding: 16,
+    marginTop: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 1,
+  },
+  addIconCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#00B57815',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  addIcon: {
+    fontSize: 18,
+    color: '#00B578',
+    fontWeight: '600',
   },
   addButtonText: {
-    color: '#4CAF50',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: '#00B578',
+    fontSize: 15,
+    fontWeight: '600',
   },
 });

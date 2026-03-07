@@ -38,204 +38,302 @@ export default function ProfileScreen() {
   };
 
   const menuItems = [
-    { icon: '📍', title: '我的地址', onPress: () => navigation.navigate('Addresses') },
-    { icon: '💳', title: '支付方式', onPress: () => {} },
-    { icon: '🎫', title: '优惠券', onPress: () => {} },
-    { icon: '⭐', title: '我的收藏', onPress: () => {} },
-    { icon: '📞', title: '联系客服', onPress: () => {} },
-    { icon: '⚙️', title: '设置', onPress: () => {} },
+    { icon: '📍', title: '我的地址', color: '#3B82F6', onPress: () => navigation.navigate('Addresses') },
+    { icon: '💳', title: '支付方式', color: '#8B5CF6', onPress: () => {} },
+    { icon: '🎫', title: '优惠券', color: '#F59E0B', onPress: () => {} },
+    { icon: '⭐', title: '我的收藏', color: '#EC4899', onPress: () => {} },
+    { icon: '📞', title: '联系客服', color: '#06B6D4', onPress: () => {} },
+    { icon: '⚙️', title: '设置', color: '#6B7280', onPress: () => {} },
+  ];
+
+  const stats = [
+    { label: '订单', value: '0', icon: '📋' },
+    { label: '优惠券', value: '0', icon: '🎫' },
+    { label: '收藏', value: '0', icon: '❤️' },
   ];
 
   if (loading) {
     return (
-      <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#4CAF50" />
+      <View style={styles.outerContainer}>
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color="#00B578" />
+        </View>
       </View>
     );
   }
 
   if (!user) {
     return (
-      <View style={styles.centerContainer}>
-        <Text style={styles.loginText}>请先登录</Text>
-        <TouchableOpacity 
-          style={styles.loginButton}
-          onPress={() => navigation.navigate('Login')}
-        >
-          <Text style={styles.loginButtonText}>去登录</Text>
-        </TouchableOpacity>
+      <View style={styles.outerContainer}>
+        <View style={styles.centerContainer}>
+          <Text style={styles.loginIcon}>👤</Text>
+          <Text style={styles.loginText}>请先登录</Text>
+          <Text style={styles.loginSubtext}>登录后享受更多服务</Text>
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={() => navigation.navigate('Login')}
+          >
+            <Text style={styles.loginButtonText}>去登录</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container}>
-      {/* 用户信息卡片 */}
-      <View style={styles.userCard}>
-        <Image 
-          source={{ uri: user.avatar || 'https://via.placeholder.com/100' }} 
-          style={styles.avatar} 
-        />
-        <View style={styles.userInfo}>
-          <Text style={styles.userName}>{user.name}</Text>
-          <Text style={styles.userPhone}>{user.phone}</Text>
-        </View>
-        <TouchableOpacity onPress={() => navigation.navigate('EditProfile')}>
-          <Text style={styles.editButton}>编辑</Text>
-        </TouchableOpacity>
-      </View>
+    <View style={styles.outerContainer}>
+      <View style={styles.container}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {/* Header gradient area */}
+          <View style={styles.headerGradient}>
+            <View style={styles.headerContent}>
+              <View style={styles.avatarWrap}>
+                <Image
+                  source={{ uri: user.avatar || 'https://via.placeholder.com/100' }}
+                  style={styles.avatar}
+                />
+              </View>
+              <View style={styles.userInfo}>
+                <Text style={styles.userName}>{user.name}</Text>
+                <Text style={styles.userPhone}>{user.phone}</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.editBtn}
+                onPress={() => navigation.navigate('EditProfile')}
+              >
+                <Text style={styles.editBtnText}>编辑 ›</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
 
-      {/* 统计信息 */}
-      <View style={styles.statsContainer}>
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>0</Text>
-          <Text style={styles.statLabel}>优惠券</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>0</Text>
-          <Text style={styles.statLabel}>收藏</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>0</Text>
-          <Text style={styles.statLabel}>足迹</Text>
-        </View>
-      </View>
+          {/* Stats row */}
+          <View style={styles.statsCard}>
+            {stats.map((stat, index) => (
+              <TouchableOpacity key={index} style={styles.statItem}>
+                <Text style={styles.statIcon}>{stat.icon}</Text>
+                <Text style={styles.statNumber}>{stat.value}</Text>
+                <Text style={styles.statLabel}>{stat.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
 
-      {/* 菜单列表 */}
-      <View style={styles.menuContainer}>
-        {menuItems.map((item, index) => (
-          <TouchableOpacity 
-            key={index}
-            style={styles.menuItem}
-            onPress={item.onPress}
-          >
-            <Text style={styles.menuIcon}>{item.icon}</Text>
-            <Text style={styles.menuTitle}>{item.title}</Text>
-            <Text style={styles.menuArrow}>›</Text>
+          {/* Menu items */}
+          <View style={styles.menuCard}>
+            {menuItems.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.menuItem,
+                  index === menuItems.length - 1 && styles.menuItemLast,
+                ]}
+                onPress={item.onPress}
+              >
+                <View style={[styles.menuIconWrap, { backgroundColor: item.color + '15' }]}>
+                  <Text style={styles.menuIcon}>{item.icon}</Text>
+                </View>
+                <Text style={styles.menuTitle}>{item.title}</Text>
+                <Text style={styles.menuArrow}>›</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {/* Logout button */}
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Text style={styles.logoutText}>退出登录</Text>
           </TouchableOpacity>
-        ))}
-      </View>
 
-      {/* 退出登录 */}
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutText}>退出登录</Text>
-      </TouchableOpacity>
-    </ScrollView>
+          <View style={{ height: 40 }} />
+        </ScrollView>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  outerContainer: {
+    flex: 1,
+    backgroundColor: '#F5F6FA',
+    alignItems: 'center',
+  },
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    width: '100%',
+    maxWidth: 480,
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    width: '100%',
+    maxWidth: 480,
   },
-  userCard: {
+  loginIcon: {
+    fontSize: 56,
+    marginBottom: 16,
+  },
+  loginText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1A1A1A',
+    marginBottom: 6,
+  },
+  loginSubtext: {
+    fontSize: 14,
+    color: '#999',
+    marginBottom: 24,
+  },
+  loginButton: {
+    backgroundColor: '#00B578',
+    paddingHorizontal: 44,
+    paddingVertical: 12,
+    borderRadius: 24,
+    shadowColor: '#00B578',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  loginButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  headerGradient: {
+    backgroundColor: '#00B578',
+    paddingTop: 56,
+    paddingBottom: 32,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+  },
+  headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#4CAF50',
-    padding: 20,
-    paddingTop: 40,
+  },
+  avatarWrap: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    borderWidth: 3,
+    borderColor: 'rgba(255,255,255,0.4)',
+    overflow: 'hidden',
   },
   avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: 'white',
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(255,255,255,0.2)',
   },
   userInfo: {
     flex: 1,
-    marginLeft: 15,
+    marginLeft: 14,
   },
   userName: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 4,
   },
   userPhone: {
     fontSize: 14,
     color: 'rgba(255,255,255,0.8)',
-    marginTop: 5,
   },
-  editButton: {
-    color: 'white',
-    fontSize: 14,
-    padding: 5,
+  editBtn: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
   },
-  statsContainer: {
+  editBtnText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  statsCard: {
     flexDirection: 'row',
-    backgroundColor: 'white',
-    paddingVertical: 20,
-    marginBottom: 10,
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 16,
+    marginTop: -16,
+    borderRadius: 14,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 3,
   },
   statItem: {
     flex: 1,
     alignItems: 'center',
   },
+  statIcon: {
+    fontSize: 22,
+    marginBottom: 4,
+  },
   statNumber: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#4CAF50',
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1A1A1A',
   },
   statLabel: {
     fontSize: 12,
-    color: '#666',
-    marginTop: 5,
+    color: '#999',
+    marginTop: 2,
   },
-  menuContainer: {
-    backgroundColor: 'white',
-    marginBottom: 10,
+  menuCard: {
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 16,
+    marginTop: 16,
+    borderRadius: 14,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 1,
   },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 15,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: '#F5F6FA',
+  },
+  menuItemLast: {
+    borderBottomWidth: 0,
+  },
+  menuIconWrap: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   menuIcon: {
-    fontSize: 20,
-    marginRight: 15,
+    fontSize: 18,
   },
   menuTitle: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 15,
+    color: '#1A1A1A',
+    marginLeft: 12,
+    fontWeight: '500',
   },
   menuArrow: {
     fontSize: 20,
-    color: '#999',
-  },
-  loginText: {
-    fontSize: 16,
-    color: '#999',
-    marginBottom: 20,
-  },
-  loginButton: {
-    backgroundColor: '#4CAF50',
-    paddingHorizontal: 40,
-    paddingVertical: 12,
-    borderRadius: 20,
-  },
-  loginButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: '#CCCCCC',
   },
   logoutButton: {
-    backgroundColor: 'white',
-    marginHorizontal: 10,
-    marginVertical: 20,
-    padding: 15,
-    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 16,
+    marginTop: 16,
+    borderRadius: 14,
+    padding: 14,
     alignItems: 'center',
   },
   logoutText: {
-    color: '#ff4444',
-    fontSize: 16,
+    color: '#EF4444',
+    fontSize: 15,
+    fontWeight: '500',
   },
 });

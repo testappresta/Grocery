@@ -66,204 +66,314 @@ export default function CartScreen() {
       <Image source={{ uri: item.image }} style={styles.itemImage} />
       <View style={styles.itemInfo}>
         <Text style={styles.itemName} numberOfLines={2}>{item.name}</Text>
-        <Text style={styles.itemPrice}>€{item.price}/{item.unit}</Text>
-        <Text style={styles.itemTotal}>小计: €{item.total}</Text>
+        <Text style={styles.itemPriceUnit}>€{item.price}/{item.unit}</Text>
+        <View style={styles.itemBottom}>
+          <Text style={styles.itemTotal}>€{item.total}</Text>
+          <View style={styles.quantityControl}>
+            <TouchableOpacity
+              style={styles.quantityBtn}
+              onPress={() => updateQuantity(item.product, item.quantity - 1)}
+            >
+              <Text style={styles.quantityBtnText}>−</Text>
+            </TouchableOpacity>
+            <Text style={styles.quantityText}>{item.quantity}</Text>
+            <TouchableOpacity
+              style={[styles.quantityBtn, styles.quantityBtnAdd]}
+              onPress={() => updateQuantity(item.product, item.quantity + 1)}
+            >
+              <Text style={[styles.quantityBtnText, styles.quantityBtnAddText]}>+</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
-      <View style={styles.quantityControl}>
-        <TouchableOpacity 
-          style={styles.quantityButton}
-          onPress={() => updateQuantity(item.product, item.quantity - 1)}
-        >
-          <Text style={styles.quantityButtonText}>-</Text>
-        </TouchableOpacity>
-        <Text style={styles.quantityText}>{item.quantity}</Text>
-        <TouchableOpacity 
-          style={styles.quantityButton}
-          onPress={() => updateQuantity(item.product, item.quantity + 1)}
-        >
-          <Text style={styles.quantityButtonText}>+</Text>
-        </TouchableOpacity>
-      </View>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.removeButton}
         onPress={() => removeItem(item.product)}
       >
-        <Text style={styles.removeButtonText}>删除</Text>
+        <Text style={styles.removeButtonText}>✕</Text>
       </TouchableOpacity>
     </View>
   );
 
   if (loading) {
     return (
-      <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#4CAF50" />
+      <View style={styles.outerContainer}>
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color="#00B578" />
+        </View>
       </View>
     );
   }
 
   if (!cart || cart.items.length === 0) {
     return (
-      <View style={styles.centerContainer}>
-        <Text style={styles.emptyText}>购物车是空的</Text>
-        <TouchableOpacity 
-          style={styles.shopButton}
-          onPress={() => navigation.navigate('Home')}
-        >
-          <Text style={styles.shopButtonText}>去购物</Text>
-        </TouchableOpacity>
+      <View style={styles.outerContainer}>
+        <View style={styles.centerContainer}>
+          <Text style={styles.emptyIcon}>🛒</Text>
+          <Text style={styles.emptyTitle}>购物车是空的</Text>
+          <Text style={styles.emptySubtitle}>快去挑选心仪的商品吧</Text>
+          <TouchableOpacity
+            style={styles.shopButton}
+            onPress={() => navigation.navigate('Home')}
+          >
+            <Text style={styles.shopButtonText}>去购物</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={cart.items}
-        renderItem={renderCartItem}
-        keyExtractor={(item) => item.product}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      />
-      
-      <View style={styles.footer}>
-        <View style={styles.totalContainer}>
-          <Text style={styles.totalLabel}>合计:</Text>
-          <Text style={styles.totalPrice}>€{cart.total}</Text>
+    <View style={styles.outerContainer}>
+      <View style={styles.container}>
+        <FlatList
+          data={cart.items}
+          renderItem={renderCartItem}
+          keyExtractor={(item) => item.product}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#00B578']} />
+          }
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+        />
+
+        <View style={styles.footer}>
+          <View style={styles.footerLeft}>
+            <Text style={styles.totalLabel}>合计</Text>
+            <View style={styles.totalPriceRow}>
+              <Text style={styles.totalCurrency}>€</Text>
+              <Text style={styles.totalPrice}>{cart.total}</Text>
+            </View>
+          </View>
+          <TouchableOpacity
+            style={styles.checkoutButton}
+            onPress={() => navigation.navigate('Checkout', { cart })}
+          >
+            <Text style={styles.checkoutButtonText}>去结算</Text>
+            <View style={styles.checkoutBadge}>
+              <Text style={styles.checkoutBadgeText}>{cart.items.length}</Text>
+            </View>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity 
-          style={styles.checkoutButton}
-          onPress={() => navigation.navigate('Checkout', { cart })}
-        >
-          <Text style={styles.checkoutButtonText}>去结算</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  outerContainer: {
+    flex: 1,
+    backgroundColor: '#F5F6FA',
+    alignItems: 'center',
+  },
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    width: '100%',
+    maxWidth: 480,
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    width: '100%',
+    maxWidth: 480,
   },
-  emptyText: {
-    fontSize: 16,
+  emptyIcon: {
+    fontSize: 64,
+    marginBottom: 16,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1A1A1A',
+    marginBottom: 6,
+  },
+  emptySubtitle: {
+    fontSize: 14,
     color: '#999',
-    marginBottom: 20,
+    marginBottom: 24,
   },
   shopButton: {
-    backgroundColor: '#4CAF50',
-    paddingHorizontal: 30,
+    backgroundColor: '#00B578',
+    paddingHorizontal: 36,
     paddingVertical: 12,
-    borderRadius: 20,
+    borderRadius: 24,
+    shadowColor: '#00B578',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   shopButtonText: {
-    color: 'white',
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '700',
+  },
+  listContent: {
+    padding: 16,
+    paddingBottom: 100,
   },
   cartItem: {
     flexDirection: 'row',
-    backgroundColor: 'white',
-    marginHorizontal: 10,
-    marginVertical: 5,
-    padding: 10,
-    borderRadius: 10,
-    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    padding: 12,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 1,
   },
   itemImage: {
     width: 80,
     height: 80,
-    borderRadius: 8,
-    backgroundColor: '#e0e0e0',
+    borderRadius: 10,
+    backgroundColor: '#F0F0F0',
   },
   itemInfo: {
     flex: 1,
-    marginLeft: 10,
+    marginLeft: 12,
+    justifyContent: 'space-between',
   },
   itemName: {
     fontSize: 14,
     fontWeight: '500',
+    color: '#1A1A1A',
+    lineHeight: 20,
   },
-  itemPrice: {
+  itemPriceUnit: {
     fontSize: 12,
-    color: '#666',
+    color: '#999',
+    marginTop: 2,
+  },
+  itemBottom: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginTop: 4,
   },
   itemTotal: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#4CAF50',
-    marginTop: 4,
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FF6B35',
   },
   quantityControl: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginHorizontal: 10,
   },
-  quantityButton: {
-    width: 30,
-    height: 30,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 15,
+  quantityBtn: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#F5F6FA',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  quantityButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
+  quantityBtnAdd: {
+    backgroundColor: '#00B578',
+  },
+  quantityBtnText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666',
+  },
+  quantityBtnAddText: {
+    color: '#FFFFFF',
   },
   quantityText: {
-    fontSize: 16,
-    marginHorizontal: 10,
-    minWidth: 30,
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#1A1A1A',
+    marginHorizontal: 12,
+    minWidth: 20,
     textAlign: 'center',
   },
   removeButton: {
-    padding: 5,
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: '#F5F6FA',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   removeButtonText: {
-    color: '#ff4444',
-    fontSize: 12,
+    fontSize: 10,
+    color: '#999',
+    fontWeight: '600',
   },
   footer: {
-    backgroundColor: 'white',
-    padding: 15,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
+    borderTopColor: '#F0F0F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 8,
   },
-  totalContainer: {
+  footerLeft: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
   },
   totalLabel: {
-    fontSize: 16,
-    marginRight: 10,
+    fontSize: 12,
+    color: '#999',
+  },
+  totalPriceRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
+  totalCurrency: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#FF6B35',
   },
   totalPrice: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#4CAF50',
+    fontWeight: '700',
+    color: '#FF6B35',
   },
   checkoutButton: {
-    backgroundColor: '#4CAF50',
-    paddingHorizontal: 30,
+    backgroundColor: '#00B578',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 28,
     paddingVertical: 12,
-    borderRadius: 20,
+    borderRadius: 24,
+    shadowColor: '#00B578',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   checkoutButtonText: {
-    color: 'white',
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '700',
+  },
+  checkoutBadge: {
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    borderRadius: 10,
+    marginLeft: 8,
+    paddingHorizontal: 7,
+    paddingVertical: 1,
+    minWidth: 20,
+    alignItems: 'center',
+  },
+  checkoutBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700',
   },
 });

@@ -32,3 +32,6 @@ See `server/package.json`:
 - All 3 frontend API configs point to `http://localhost:3001/api/v1`.
 - The driver app has React Native web compatibility warnings (react-native-maps, expo-location) which are expected in web mode.
 - Health check: `GET http://localhost:3001/health`
+- When starting an Expo app, kill ALL other Expo processes first (`ps aux | grep expo | grep -v grep | grep -v defunct | awk '{print $2}' | xargs kill 2>/dev/null`). The shared webpack port 19006 and Metro port 8081 will serve whichever app grabbed them first.
+- Use `npx expo start --web --clear` to clear cached bundles when switching between apps.
+- Verify the correct app is served: `curl -s http://localhost:19006 | grep "<title>"` should show the expected app name.

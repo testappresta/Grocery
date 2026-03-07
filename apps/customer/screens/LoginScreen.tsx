@@ -56,10 +56,10 @@ export default function LoginScreen() {
     try {
       const response = await authAPI.loginWithPhone(phone, code);
       const { accessToken, refreshToken, user } = response.data.data;
-      
+
       await AsyncStorage.setItem('accessToken', accessToken);
       await AsyncStorage.setItem('refreshToken', refreshToken);
-      
+
       Alert.alert('成功', '登录成功！');
       navigation.replace('Main');
     } catch (error) {
@@ -70,162 +70,247 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>欢迎回来</Text>
-        <Text style={styles.subtitle}>请登录您的账户</Text>
-      </View>
-
-      <View style={styles.form}>
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>手机号</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="请输入手机号"
-            keyboardType="phone-pad"
-            value={phone}
-            onChangeText={setPhone}
-            maxLength={15}
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>验证码</Text>
-          <View style={styles.codeContainer}>
-            <TextInput
-              style={[styles.input, styles.codeInput]}
-              placeholder="请输入验证码"
-              keyboardType="number-pad"
-              value={code}
-              onChangeText={setCode}
-              maxLength={6}
-            />
-            <TouchableOpacity
-              style={[
-                styles.codeButton,
-                (countdown > 0 || sendingCode) && styles.codeButtonDisabled,
-              ]}
-              onPress={sendVerificationCode}
-              disabled={countdown > 0 || sendingCode}
-            >
-              <Text style={styles.codeButtonText}>
-                {sendingCode
-                  ? '发送中...'
-                  : countdown > 0
-                  ? `${countdown}s`
-                  : '获取验证码'}
-              </Text>
-            </TouchableOpacity>
+    <View style={styles.outerContainer}>
+      <View style={styles.container}>
+        {/* Brand area */}
+        <View style={styles.brandArea}>
+          <View style={styles.logoCircle}>
+            <Text style={styles.logoEmoji}>🥬</Text>
           </View>
+          <Text style={styles.brandName}>鲜果蔬配送</Text>
+          <Text style={styles.brandSlogan}>新鲜直达 · 品质保证</Text>
         </View>
 
-        <TouchableOpacity
-          style={styles.loginButton}
-          onPress={handleLogin}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color="white" />
-          ) : (
-            <Text style={styles.loginButtonText}>登录</Text>
-          )}
-        </TouchableOpacity>
+        {/* Form card */}
+        <View style={styles.formCard}>
+          <Text style={styles.formTitle}>欢迎回来</Text>
+          <Text style={styles.formSubtitle}>请登录您的账户</Text>
 
-        <TouchableOpacity
-          style={styles.registerButton}
-          onPress={() => navigation.navigate('Register')}
-        >
-          <Text style={styles.registerText}>还没有账户？立即注册</Text>
-        </TouchableOpacity>
+          <View style={styles.inputWrap}>
+            <Text style={styles.inputLabel}>手机号</Text>
+            <View style={styles.inputRow}>
+              <Text style={styles.inputIcon}>📱</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="请输入手机号"
+                placeholderTextColor="#CCCCCC"
+                keyboardType="phone-pad"
+                value={phone}
+                onChangeText={setPhone}
+                maxLength={15}
+              />
+            </View>
+          </View>
+
+          <View style={styles.inputWrap}>
+            <Text style={styles.inputLabel}>验证码</Text>
+            <View style={styles.codeRow}>
+              <View style={[styles.inputRow, styles.codeInputRow]}>
+                <Text style={styles.inputIcon}>🔑</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="请输入验证码"
+                  placeholderTextColor="#CCCCCC"
+                  keyboardType="number-pad"
+                  value={code}
+                  onChangeText={setCode}
+                  maxLength={6}
+                />
+              </View>
+              <TouchableOpacity
+                style={[
+                  styles.codeButton,
+                  (countdown > 0 || sendingCode) && styles.codeButtonDisabled,
+                ]}
+                onPress={sendVerificationCode}
+                disabled={countdown > 0 || sendingCode}
+              >
+                <Text style={[
+                  styles.codeButtonText,
+                  (countdown > 0 || sendingCode) && styles.codeButtonTextDisabled,
+                ]}>
+                  {sendingCode
+                    ? '发送中...'
+                    : countdown > 0
+                    ? `${countdown}s`
+                    : '获取验证码'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <TouchableOpacity
+            style={[styles.loginButton, loading && styles.loginButtonDisabled]}
+            onPress={handleLogin}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#FFFFFF" />
+            ) : (
+              <Text style={styles.loginButtonText}>登 录</Text>
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.registerButton}
+            onPress={() => navigation.navigate('Register')}
+          >
+            <Text style={styles.registerText}>还没有账户？</Text>
+            <Text style={styles.registerLink}>立即注册</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  outerContainer: {
+    flex: 1,
+    backgroundColor: '#00B578',
+    alignItems: 'center',
+  },
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    padding: 20,
+    width: '100%',
+    maxWidth: 480,
   },
-  header: {
-    marginTop: 60,
-    marginBottom: 40,
+  brandArea: {
+    alignItems: 'center',
+    paddingTop: 72,
+    paddingBottom: 32,
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#333',
+  logoCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
   },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginTop: 10,
+  logoEmoji: {
+    fontSize: 40,
   },
-  form: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 15,
+  brandName: {
+    fontSize: 26,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 6,
   },
-  inputContainer: {
+  brandSlogan: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.8)',
+  },
+  formCard: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    paddingHorizontal: 24,
+    paddingTop: 32,
+  },
+  formTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#1A1A1A',
+    marginBottom: 4,
+  },
+  formSubtitle: {
+    fontSize: 14,
+    color: '#999',
+    marginBottom: 28,
+  },
+  inputWrap: {
     marginBottom: 20,
   },
-  label: {
-    fontSize: 14,
-    color: '#333',
+  inputLabel: {
+    fontSize: 13,
+    color: '#666',
     marginBottom: 8,
     fontWeight: '500',
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 10,
-    padding: 15,
-    fontSize: 16,
-    backgroundColor: '#f9f9f9',
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F6FA',
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    height: 50,
   },
-  codeContainer: {
+  inputIcon: {
+    fontSize: 18,
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    fontSize: 15,
+    color: '#1A1A1A',
+    height: 50,
+  },
+  codeRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  codeInput: {
+  codeInputRow: {
     flex: 1,
     marginRight: 10,
   },
   codeButton: {
-    backgroundColor: '#4CAF50',
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    borderRadius: 10,
-    minWidth: 100,
+    backgroundColor: '#00B578',
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    height: 50,
+    justifyContent: 'center',
     alignItems: 'center',
+    minWidth: 110,
   },
   codeButtonDisabled: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#E0E0E0',
   },
   codeButtonText: {
-    color: 'white',
+    color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
+  },
+  codeButtonTextDisabled: {
+    color: '#999',
   },
   loginButton: {
-    backgroundColor: '#4CAF50',
-    padding: 15,
-    borderRadius: 10,
+    backgroundColor: '#00B578',
+    height: 52,
+    borderRadius: 26,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 12,
+    shadowColor: '#00B578',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  loginButtonDisabled: {
+    opacity: 0.7,
   },
   loginButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
+    color: '#FFFFFF',
+    fontSize: 17,
+    fontWeight: '700',
+    letterSpacing: 4,
   },
   registerButton: {
-    marginTop: 20,
-    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 24,
   },
   registerText: {
-    color: '#4CAF50',
+    color: '#999',
     fontSize: 14,
+  },
+  registerLink: {
+    color: '#00B578',
+    fontSize: 14,
+    fontWeight: '600',
+    marginLeft: 4,
   },
 });
