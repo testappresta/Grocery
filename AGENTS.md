@@ -21,11 +21,11 @@ See `server/package.json`:
 - **Dev**: `npm run dev` (tsx watch)
 - **Build**: `npm run build` (tsc)
 - **Lint**: `npm run lint` (eslint)
-- **Test**: `npm run test` (jest)
+- **Test**: `npm run test` (jest; no test files exist yet, exits 1 without `--passWithNoTests`)
 
 ### Gotchas
 - MongoDB must be running before starting the backend; app calls `process.exit(1)` on failure.
-- `chmod -R 777 /data/db` may be needed if MongoDB fails with permission errors.
+- `sudo chmod -R 777 /data/db` may be needed if MongoDB fails with permission errors (requires `sudo`).
 - `.env` is copied from `.env.example`; keep `REDIS_URL` commented out unless Redis is installed.
 - External services (Stripe, Twilio, Firebase, S3, Google Maps) degrade gracefully when unconfigured.
 - TypeScript strict mode produces type errors in existing code; `tsx` ignores them at runtime.
