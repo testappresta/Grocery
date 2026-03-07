@@ -25,6 +25,7 @@ import paymentRoutes from './routes/payment';
 import notificationRoutes from './routes/notification';
 import reviewRoutes from './routes/review';
 import couponRoutes from './routes/coupon';
+import farmRoutes from './routes/farm';
 
 dotenv.config();
 
@@ -93,6 +94,7 @@ app.use('/api/v1/payments', paymentRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
 app.use('/api/v1/coupons', couponRoutes);
+app.use('/api/v1/farm', farmRoutes);
 
 // 错误处理
 app.use(errorHandler);
