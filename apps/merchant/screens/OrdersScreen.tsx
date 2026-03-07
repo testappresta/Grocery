@@ -78,7 +78,7 @@ export default function OrdersScreen() {
             <Text style={styles.orderTime}>{item.time}</Text>
           </View>
           <View style={[styles.statusBadge, { backgroundColor: status.color + '20' }]}>
-            <Text style={[styles.statusText, { color: status.color }]>{status.label}</Text>
+            <Text style={[styles.statusText, { color: status.color }]}>{status.label}</Text>
           </View>
         </View>
 
@@ -129,7 +129,7 @@ export default function OrdersScreen() {
             style={[styles.tab, activeTab === tab.key && styles.activeTab]}
             onPress={() => setActiveTab(tab.key)}
           >
-            <Text style={[styles.tabText, activeTab === tab.key && styles.activeTabText]>
+            <Text style={[styles.tabText, activeTab === tab.key && styles.activeTabText]}>
               {tab.label}
             </Text>
           </TouchableOpacity>

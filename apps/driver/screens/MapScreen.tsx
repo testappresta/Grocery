@@ -5,7 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import MapView, { Marker, Polyline } from 'react-native-maps';
+// import MapView, { Marker, Polyline } from 'react-native-maps';
 import { useRoute, useNavigation } from '@react-navigation/native';
 
 export default function MapScreen() {
@@ -37,7 +37,7 @@ export default function MapScreen() {
 
   return (
     <View style={styles.container}>
-      <MapView
+      {/* <MapView
         style={styles.map}
         initialRegion={initialRegion}
       >
@@ -60,7 +60,11 @@ export default function MapScreen() {
           strokeColor="#4CAF50"
           strokeWidth={3}
         />
-      </MapView>
+      </MapView> */}
+      
+      <View style={styles.map}>
+        <Text style={styles.mapPlaceholder}>地图导航 (Web模式不支持)</Text>
+      </View>
 
       <View style={styles.infoCard}>
         <Text style={styles.infoTitle}>配送导航</Text>
@@ -103,6 +107,13 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
+    backgroundColor: '#e0e0e0',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mapPlaceholder: {
+    fontSize: 16,
+    color: '#666',
   },
   infoCard: {
     position: 'absolute',

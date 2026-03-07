@@ -8,7 +8,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import * as Location from 'expo-location';
+// import * as Location from 'expo-location';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -53,15 +53,16 @@ export default function HomeScreen() {
   ]);
 
   useEffect(() => {
-    requestLocationPermission();
+    // requestLocationPermission();
   }, []);
 
   const requestLocationPermission = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status === 'granted') {
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    }
+    // Disabled for web - expo-location not compatible with web
+    // let { status } = await Location.requestForegroundPermissionsAsync();
+    // if (status === 'granted') {
+    //   let location = await Location.getCurrentPositionAsync({});
+    //   setLocation(location);
+    // }
   };
 
   const onRefresh = async () => {
