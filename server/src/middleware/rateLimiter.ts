@@ -23,6 +23,8 @@ const createRateLimiter = () => {
 
 const rateLimiter = createRateLimiter();
 
+export { rateLimiterMiddleware as rateLimiter };
+
 export const rateLimiterMiddleware = async (
   req: Request,
   res: Response,
